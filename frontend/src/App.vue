@@ -54,6 +54,11 @@ function onLogout() {
           <span class="nav-dot"></span>单元回溯链
         </router-link>
 
+        <div class="nav-label">个体重识别</div>
+        <router-link to="/reid" :class="{ active: route.name === 'reid' || route.name === 'reid-trace' }">
+          <span class="nav-dot"></span>重识别工作区
+        </router-link>
+
         <div class="nav-label">证据与规则</div>
         <router-link to="/records" :class="{ active: route.name === 'records' }">
           <span class="nav-dot"></span>观测档案

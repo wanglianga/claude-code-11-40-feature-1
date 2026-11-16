@@ -361,3 +361,222 @@ export interface ArchiveRecord {
   determinations?: Determination[]
   used_by_units?: number[]
 }
+
+// ------------------------------------------------------------ 个体重识别
+export interface ReidObservation {
+  id: number
+  observation_code: string
+  species_code: string
+  observation_kind: string
+  external_ref: string
+  file_hash: string
+  station_id: number
+  station_code: string | null
+  station_name: string | null
+  latitude: number | null
+  longitude: number | null
+  observed_at: string
+  received_at: string
+  effective_observed_at: string
+  corrected_observed_at: string | null
+  time_correction_id: number | null
+  location_version_id: number | null
+  feature_version_id: number | null
+  posture_quality: string
+  posture_score: number
+  visible_features: Record<string, any>
+  source_cluster_id: number | null
+  source_cluster?: ReidSourceCluster | null
+  authorization: Record<string, any>
+  authorization_status: 'authorized' | 'withdrawn'
+  interpretability: 'interpretable' | 'unreadable'
+  season_code: string
+  survey_date: string | null
+  payload_hash: string
+  record_status: string
+  created_by: string
+  created_at: string
+}
+
+export interface ReidSourceCluster {
+  id: number
+  cluster_code: string
+  cluster_kind: string
+  cluster_kind_label: string
+  rationale: string
+  member_count?: number
+  created_at: string
+}
+
+export interface ReidDecision {
+  id: number
+  candidate_id: number
+  expert: string
+  expert_level: string
+  verdict: 'confirm' | 'reject' | 'retain'
+  verdict_label: string
+  reason: string
+  evidence_snapshot: Record<string, any>
+  frozen_versions: Record<string, any>
+  expected_last_decision_id: number | null
+  superseded: boolean
+  created_at: string
+}
+
+export interface ReidCandidate {
+  id: number
+  batch_id: number | null
+  observation_a_id: number
+  observation_b_id: number
+  observation_a_code: string
+  observation_b_code: string
+  observation_a_station: string | null
+  observation_b_station: string | null
+  feature_score: number
+  spatial_reachable: boolean
+  evidence: Record<string, any>
+  counter_evidence: Array<Record<string, any>>
+  source_independent: boolean
+  status: string
+  status_label: string
+  created_at: string
+  decisions: ReidDecision[]
+}
+
+export interface ReidPartition {
+  id: number
+  batch_id: number
+  partition_code: string
+  rank: number
+  score: number
+  groups: number[][]
+  competing_memberships: Record<string, any>
+  constraint_violations: Array<Record<string, any>>
+  status: string
+  status_label: string
+}
+
+export interface ReidBatch {
+  id: number
+  batch_code: string
+  season_code: string
+  species_code: string
+  scope_observation_ids: number[]
+  max_travel_speed_kmh: number
+  feature_threshold: number
+  status: string
+  status_label: string
+  checked_pair_count: number
+  unresolved_observation_ids: number[]
+  truncation_note: string
+  candidates?: ReidCandidate[]
+  partitions?: ReidPartition[]
+  created_at: string
+}
+
+export interface ReidIndividualVersion {
+  id: number
+  individual_id: number
+  version_number: number
+  observation_ids: number[]
+  source_cluster_ids: number[]
+  candidate_ids: number[]
+  decision_ids: number[]
+  frozen_versions: Record<string, any>
+  change_reason: string
+  status: string
+  status_label: string
+}
+
+export interface ReidIndividual {
+  id: number
+  individual_code: string
+  species_code: string
+  season_code: string
+  status: string
+  status_label: string
+  current_version_id: number | null
+  observation_ids: number[]
+  versions?: ReidIndividualVersion[]
+}
+
+export interface ReidCaptureEntry {
+  id: number
+  individual_id: number | null
+  individual_code: string | null
+  observation_id: number
+  observation_code: string | null
+  source_cluster_id: number | null
+  station_code: string | null
+  survey_date: string
+  capture_kind: 'first' | 'repeat' | 'excluded'
+  capture_kind_label: string
+  sequence_no: number
+  status: string
+  status_label: string
+  exclusion_reason: string
+}
+
+export interface ReidReportRun {
+  id: number
+  report_code: string
+  season_code: string
+  species_code: string
+  status: string
+  summary: {
+    photo_observation_count: number
+    candidate_count: number
+    candidate_status_counts: Record<string, number>
+    statistical_individual_count: number
+    first_capture_count: number
+    repeat_capture_count: number
+    exclusion_buckets: Record<string, number>
+    season_window: [string, string] | null
+    change_note?: string
+  }
+  superseded_by_id: number | null
+  created_by: string
+  created_at: string
+  entries?: ReidCaptureEntry[]
+}
+
+export interface ReidReviewEvent {
+  id: number
+  individual_id: number
+  individual_version_id: number
+  trigger_type: string
+  trigger_label: string
+  trigger_detail: Record<string, any>
+  status: string
+  status_label: string
+  resolution: string
+  opened_by: string
+  resolved_by: string | null
+  created_at: string
+  resolved_at: string | null
+}
+
+export interface ReidAdjudication {
+  id: number
+  candidate_id: number
+  reason: string
+  third_party_evidence: Record<string, any>
+  status: 'pending' | 'resolved'
+  final_verdict: string | null
+  opened_by: string
+  resolved_by: string | null
+  created_at: string
+  resolved_at: string | null
+}
+
+export interface ReidMembershipHold {
+  id: number
+  observation_id: number
+  individual_a_id: number
+  individual_b_id: number
+  candidate_id: number
+  status: 'open' | 'resolved'
+  reason: string
+  created_at: string
+  resolved_at: string | null
+}

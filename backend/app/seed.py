@@ -748,6 +748,9 @@ def main() -> None:
         seed_archive(db, zone_map, station_map)
         run = seed_run(db, rulebook, model)
         seed_references_and_revision(db, run)
+        from .reid_seed import seed_reid
+
+        seed_reid(db)
         db.commit()
         print(f"seed: run {run.run_code} with {len(run.units)} survey units")
     except Exception:

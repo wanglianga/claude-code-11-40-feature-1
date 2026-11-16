@@ -13,6 +13,8 @@ const router = createRouter({
     { path: '/conflicts', name: 'conflicts', component: () => import('./views/ConflictsView.vue') },
     { path: '/trends', name: 'trends', component: () => import('./views/TrendsView.vue') },
     { path: '/trace', name: 'trace', component: () => import('./views/TraceView.vue') },
+    { path: '/reid', name: 'reid', component: () => import('./views/ReidWorkspaceView.vue') },
+    { path: '/reid/trace/:kind(observation|report)/:id(\\d+)', name: 'reid-trace', component: () => import('./views/ReidTraceView.vue') },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
 })
